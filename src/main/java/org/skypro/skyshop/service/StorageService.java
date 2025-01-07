@@ -90,4 +90,8 @@ public class StorageService {
         result.addAll(storageArticle.values());
         return result;
     }
+
+    public Optional<Product> getProductById(UUID id) {
+        return Optional.ofNullable(storageProduct.get(id));
+    }
 }

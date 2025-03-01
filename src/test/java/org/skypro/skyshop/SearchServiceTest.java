@@ -40,21 +40,9 @@ public class SearchServiceTest {
     //Есть объекты в storageService, но нет подходящего
     @Test
     void whenThereAreObjectsButNoSuitable() {
-        List<Product> products = new ArrayList<>();
         UUID id = UUID.randomUUID();
-        Product p1 = new FixPriceProduct("Масло", id);
-        Product p2 = new SimpleProduct("Капуста", 30, id);
-        Product p3 = new DiscountedProduct("Чай", 100, 10, id);
-        Product p4 = new SimpleProduct("Кофе", 350, id);
-        Product p5 = new SimpleProduct("Пельмени", 280, id);
-        Product p6 = new DiscountedProduct("Торт", 600, 5, id);
-        products.add(p1);
-        products.add(p2);
-        products.add(p3);
-        products.add(p4);
-        products.add(p5);
-        products.add(p6);
 
+        List<Product> products = getProducts(id);
 
         Mockito.when(storageService.getSearchableCollection()).thenReturn(Collections.unmodifiableList(products));
         Assertions.assertEquals(Collections.emptyList(), searchService.search("яблоко"));
@@ -63,20 +51,10 @@ public class SearchServiceTest {
     //Есть объекты в storageService, и есть подходящий
     @Test
     void whenThereAreProductsAndThereSuitable() {
-        List<Product> products = new ArrayList<>();
         UUID id = UUID.randomUUID();
-        Product p1 = new FixPriceProduct("Масло", id);
-        Product p2 = new SimpleProduct("Капуста", 30, id);
-        Product p3 = new DiscountedProduct("Чай", 100, 10, id);
-        Product p4 = new SimpleProduct("Кофе", 350, id);
-        Product p5 = new SimpleProduct("Пельмени", 280, id);
-        Product p6 = new DiscountedProduct("Торт", 600, 5, id);
-        products.add(p1);
-        products.add(p2);
-        products.add(p3);
-        products.add(p4);
-        products.add(p5);
-        products.add(p6);
+
+        List<Product> products = getProducts(id);
+
         List<SearchResult> result = new ArrayList<>();
         result.add(new SearchResult(id, "Масло", "PRODUCT"));
 
@@ -87,25 +65,49 @@ public class SearchServiceTest {
 
     @Test
     void whenThereAreArticlesAndThereSuitable() {
-        List<Article> products = new ArrayList<>();
         UUID id = UUID.randomUUID();
+        List<Article> products = getArticles(id);
+
+        List<SearchResult> result = new ArrayList<>();
+        Article a6 = new Article("Арбуз. История.", "Арбуз: тут что-то про арбуз", id);
+        result.add(new SearchResult(id, a6.toString(), "ARTICLE"));
+
+
+        Mockito.when(storageService.getSearchableCollection()).thenReturn(Collections.unmodifiableList(products));
+        Assertions.assertEquals(result, searchService.search("Арбуз"));
+    }
+
+    private List<Product> getProducts(UUID id) {
+        List<Product> products = new ArrayList<>();
+        Product p1 = new FixPriceProduct("Масло", id);
+        Product p2 = new SimpleProduct("Капуста", 30, id);
+        Product p3 = new DiscountedProduct("Чай", 100, 10, id);
+        Product p4 = new SimpleProduct("Кофе", 350, id);
+        Product p5 = new SimpleProduct("Пельмени", 280, id);
+        Product p6 = new DiscountedProduct("Торт", 600, 5, id);
+        products.add(p1);
+        products.add(p2);
+        products.add(p3);
+        products.add(p4);
+        products.add(p5);
+        products.add(p6);
+        return products;
+    }
+
+    private List<Article> getArticles(UUID id) {
+        List<Article> articles = new ArrayList<>();
         Article a1 = new Article("Чай. История.", "Чай китайский и индийский", id);
         Article a2 = new Article("Пельмени", "Пельмени в русской традиции", id);
         Article a3 = new Article("Капуста", "Десять блюд из капусты", id);
         Article a4 = new Article("Кофе. История.", "Кофе: арабика и робуста", id);
         Article a6 = new Article("Арбуз. История.", "Арбуз: тут что-то про арбуз", id);
         Article a5 = new Article("Чай черный", "Чай бла бла бла. Чай бла бла бла...", id);
-        products.add(a1);
-        products.add(a2);
-        products.add(a3);
-        products.add(a4);
-        products.add(a5);
-        products.add(a6);
-        List<SearchResult> result = new ArrayList<>();
-        result.add(new SearchResult(id, a6.toString(), "ARTICLE"));
-
-
-        Mockito.when(storageService.getSearchableCollection()).thenReturn(Collections.unmodifiableList(products));
-        Assertions.assertEquals(result, searchService.search("Арбуз"));
+        articles.add(a1);
+        articles.add(a2);
+        articles.add(a3);
+        articles.add(a4);
+        articles.add(a5);
+        articles.add(a6);
+        return articles;
     }
 }
